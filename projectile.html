@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Projectile Motion</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #0b0b0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui, sans-serif;
+  }
+  canvas {
+    background: #000000;
+    border: 1px solid #333;
+    touch-action: none;
+  }
+  #label {
+    position: fixed;
+    top: 12px;
+    left: 16px;
+    color: #ccc;
+    font-size: 13px;
+    max-width: 480px;
+  }
+  #controls {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    color: #ccc;
+    font-size: 12px;
+    text-align: right;
+    background: rgba(255,255,255,0.03);
+    padding: 10px 14px;
+    border-radius: 6px;
+  }
+  #controls div {
+    margin-bottom: 8px;
+  }
+  #controls input[type="range"] {
+    width: 180px;
+  }
+  #controls label.checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  #buttonsRow {
+    display: flex;
+    gap: 6px;
+  }
+  #buttonsRow button {
+    flex: 1;
+  }
+</style>
+</head>
+<body>
+
+<div id="label">
+  Projectile motion, with optional air drag. Drag the pillar to set the
+  launch height, or use the slider. Set the angle and speed with the
+  sliders, then press Launch — the catapult's arm winds up and throws the
+  ball from its cup. The dashed curve traces the actual path as the object
+  moves.
+</div>
+
+<div id="controls">
+  <div>
+    <label for="heightSlider">Launch height: <span id="heightValue">20</span> m</label><br>
+    <input type="range" id="heightSlider" min="0" max="50" step="1" value="20">
+  </div>
+  <div>
+    <label for="speedSlider">Initial speed: <span id="speedValue">20</span> m/s</label><br>
+    <input type="range" id="speedSlider" min="5" max="35" step="1" value="20">
+  </div>
+  <div>
+    <label for="angleSlider">Angle: <span id="angleValue">45</span>&deg;</label><br>
+    <input type="range" id="angleSlider" min="0" max="90" step="1" value="45">
+  </div>
+  <div>
+    <label for="radiusSlider">Radius: <span id="radiusValue">0.11</span> m</label><br>
+    <input type="range" id="radiusSlider" min="0.01" max="0.5" step="0.01" value="0.11">
+  </div>
+  <div>
+    <label for="massSlider">Mass: <span id="massValue">0.43</span> kg</label><br>
+    <input type="range" id="massSlider" min="0.05" max="10" step="0.05" value="0.43">
+  </div>
+  <div>
+    <label class="checkbox"><input type="checkbox" id="dragCheckbox" checked> Enable air drag</label>
+  </div>
+  <div>
+    <label for="gravitySelect">Gravity:</label><br>
+    <select id="gravitySelect">
+      <option value="earth" selected>Earth (9.8 m/s&sup2;)</option>
+      <option value="moon">Moon (1.62 m/s&sup2;)</option>
+      <option value="mars">Mars (3.71 m/s&sup2;)</option>
+    </select>
+  </div>
+  <div>
+    <label class="checkbox"><input type="checkbox" id="vectorsCheckbox" checked> Show v<sub>x</sub> / v<sub>y</sub> vectors</label>
+  </div>
+  <div>
+    <label class="checkbox"><input type="checkbox" id="traceCheckbox" checked> Show trajectory trace</label>
+  </div>
+  <div>
+    <label class="checkbox"><input type="checkbox" id="speedValuesCheckbox" checked> Show speed values</label>
+  </div>
+  <div id="buttonsRow">
+    <button id="launchBtn">Launch</button>
+    <button id="pauseBtn">Pause</button>
+  </div>
+</div>
+
+<canvas id="canvas" width="1200" height="600"></canvas>
+
+<script src="projectile.js"></script>
+
+</body>
+</html>

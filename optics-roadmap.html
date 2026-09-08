@@ -1,0 +1,476 @@
+<title>Optics Sim Roadmap</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500..700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root {
+    --bg: #f2f4f8;
+    --surface: #ffffff;
+    --surface-2: #e9ecf2;
+    --border: #d7dbe4;
+    --text: #1a1f2b;
+    --text-muted: #5b6474;
+    --accent: #a5710d;
+    --accent-ink: #ffffff;
+    --accent-soft: #f3e3c4;
+    --done: #197a5c;
+    --done-soft: #d9f2ea;
+    --notstarted: #8d94a3;
+    --notstarted-soft: #eef0f4;
+    --shadow: 0 1px 2px rgba(20, 24, 33, 0.06), 0 8px 24px -12px rgba(20, 24, 33, 0.12);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0d0f14;
+      --surface: #161a22;
+      --surface-2: #1c212b;
+      --border: #272e3b;
+      --text: #ece9e1;
+      --text-muted: #8b93a3;
+      --accent: #f0b429;
+      --accent-ink: #17110a;
+      --accent-soft: rgba(240, 180, 41, 0.14);
+      --done: #4fd8a8;
+      --done-soft: rgba(79, 216, 168, 0.14);
+      --notstarted: #4d5566;
+      --notstarted-soft: rgba(255, 255, 255, 0.04);
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
+    }
+  }
+
+  :root[data-theme="dark"] {
+    --bg: #0d0f14;
+    --surface: #161a22;
+    --surface-2: #1c212b;
+    --border: #272e3b;
+    --text: #ece9e1;
+    --text-muted: #8b93a3;
+    --accent: #f0b429;
+    --accent-ink: #17110a;
+    --accent-soft: rgba(240, 180, 41, 0.14);
+    --done: #4fd8a8;
+    --done-soft: rgba(79, 216, 168, 0.14);
+    --notstarted: #4d5566;
+    --notstarted-soft: rgba(255, 255, 255, 0.04);
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'IBM Plex Sans', system-ui, sans-serif;
+    line-height: 1.55;
+  }
+
+  .page {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 64px 24px 96px;
+  }
+
+  header.intro {
+    margin-bottom: 48px;
+  }
+
+  .eyebrow {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 12.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 12px;
+  }
+
+  h1 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    font-size: clamp(32px, 5vw, 44px);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    margin: 0 0 16px;
+    text-wrap: balance;
+  }
+
+  .lede {
+    font-size: 16.5px;
+    color: var(--text-muted);
+    max-width: 62ch;
+    margin: 0 0 24px;
+  }
+
+  .chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
+  .chip {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 12.5px;
+    padding: 5px 11px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+  }
+
+  .roadmap {
+    position: relative;
+  }
+
+  .stage {
+    position: relative;
+    display: grid;
+    grid-template-columns: 56px 1fr;
+    gap: 20px;
+    padding-bottom: 36px;
+  }
+
+  .stage:last-child { padding-bottom: 0; }
+
+  .spine {
+    position: relative;
+    display: flex;
+    justify-content: center;
+  }
+
+  .spine::before {
+    content: "";
+    position: absolute;
+    top: 40px;
+    bottom: -36px;
+    left: 50%;
+    width: 2px;
+    transform: translateX(-50%);
+    background: linear-gradient(to bottom, var(--accent), var(--border) 65%);
+    opacity: 0.55;
+  }
+
+  .stage:last-child .spine::before { display: none; }
+
+  .marker {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+    background: var(--surface);
+    border: 1.5px solid var(--border);
+    color: var(--text-muted);
+    z-index: 1;
+    flex-shrink: 0;
+  }
+
+  .stage[data-status="done"] .marker {
+    border-color: var(--done);
+    color: var(--done);
+  }
+
+  .stage[data-status="progress"] .marker {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: var(--accent-soft);
+  }
+
+  .card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 20px 22px;
+    box-shadow: var(--shadow);
+  }
+
+  .card-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+  }
+
+  .card h2 {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    font-size: 19px;
+    margin: 0;
+    text-wrap: balance;
+  }
+
+  .status {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    padding: 3px 9px;
+    border-radius: 999px;
+    white-space: nowrap;
+  }
+
+  .stage[data-status="done"] .status {
+    background: var(--done-soft);
+    color: var(--done);
+  }
+
+  .stage[data-status="progress"] .status {
+    background: var(--accent-soft);
+    color: var(--accent);
+  }
+
+  .stage[data-status="todo"] .status {
+    background: var(--notstarted-soft);
+    color: var(--notstarted);
+  }
+
+  .card p {
+    margin: 0;
+    color: var(--text-muted);
+    font-size: 14.5px;
+  }
+
+  .so-far {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border);
+    font-size: 13.5px;
+    color: var(--text);
+  }
+
+  .so-far b {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-weight: 500;
+    font-size: 11px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--done);
+    display: block;
+    margin-bottom: 4px;
+  }
+
+  code {
+    font-family: 'IBM Plex Mono', ui-monospace, monospace;
+    font-size: 0.92em;
+    background: var(--surface-2);
+    padding: 1px 5px;
+    border-radius: 4px;
+  }
+
+  .optional {
+    opacity: 0.85;
+  }
+
+  .optional .card {
+    border-style: dashed;
+    box-shadow: none;
+  }
+
+  footer.note {
+    margin-top: 44px;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+    font-size: 13.5px;
+    color: var(--text-muted);
+  }
+
+  @media (prefers-reduced-motion: no-preference) {
+    .card { transition: box-shadow 0.15s ease; }
+  }
+</style>
+
+<div class="page">
+
+  <header class="intro">
+    <p class="eyebrow">Project &middot; optics simulation site</p>
+    <h1>From ray-tracing scripts to a PhET-style site</h1>
+    <p class="lede">
+      The plan for turning your Python ray-tracing work (thin/thick lenses, mirrors) into an
+      interactive, multi-simulation website &mdash; ported to simple client-side math, no backend.
+    </p>
+    <div class="chips">
+      <span class="chip">JavaScript / TypeScript</span>
+      <span class="chip">Canvas rendering</span>
+      <span class="chip">No backend</span>
+      <span class="chip">Static hosting</span>
+      <span class="chip">VS Code + ESLint + Prettier</span>
+    </div>
+  </header>
+
+  <div class="roadmap">
+
+    <div class="stage" data-status="progress">
+      <div class="spine"><div class="marker">1</div></div>
+      <div class="card">
+        <div class="card-head">
+          <h2>Lock in the tech decisions</h2>
+          <span class="status">In progress</span>
+        </div>
+        <p>
+          Pure client-side JavaScript, no backend, no Pyodide &mdash; your math is simple enough
+          to hand-port. Still open: JavaScript vs. TypeScript, and whether to add a bundler
+          like Vite or stay with plain files.
+        </p>
+        <div class="so-far">
+          <b>So far</b>
+          Editor set up in VS Code &mdash; ESLint installed, Prettier and Live Server recommended,
+          and the built-in JavaScript debugger confirmed working.
+        </div>
+      </div>
+    </div>
+
+    <div class="stage" data-status="progress">
+      <div class="spine"><div class="marker">2</div></div>
+      <div class="card">
+        <div class="card-head">
+          <h2>Port the core ray-tracing math</h2>
+          <span class="status">In progress</span>
+        </div>
+        <p>
+          Translate the model layer &mdash; surface intersection, Snell's law refraction, mirror
+          reflection, thin- and thick-lens handling &mdash; into a standalone JS module with no UI
+          code in it. Spot-check outputs against the Python scripts before building anything on top.
+        </p>
+        <div class="so-far">
+          <b>So far</b>
+          First piece written: a point-source ray generator (<code>getRayAngles</code>) that fans
+          rays evenly across a given angular field &mdash; the seed of the model layer.
+        </div>
+      </div>
+    </div>
+
+    <div class="stage" data-status="progress">
+      <div class="spine"><div class="marker">3</div></div>
+      <div class="card">
+        <div class="card-head">
+          <h2>Build shared interactive building blocks</h2>
+          <span class="status">In progress</span>
+        </div>
+        <p>
+          The reusable pieces every sim will need: a physical-units-to-pixels coordinate system,
+          draggable-object handling (mouse and touch), a ray/line renderer, and basic UI controls
+          (sliders, reset button).
+        </p>
+        <div class="so-far">
+          <b>So far</b>
+          Established the file pattern &mdash; <code>index.html</code> for structure,
+          <code>script.js</code> for logic &mdash; and a working canvas renderer for a point
+          source and its ray fan. Coordinate scaling and dragging are still ahead.
+        </div>
+      </div>
+    </div>
+
+    <div class="stage" data-status="todo">
+      <div class="spine"><div class="marker">4</div></div>
+      <div class="card">
+        <div class="card-head">
+          <h2>Build one simulation end-to-end</h2>
+          <span class="status">Not started</span>
+        </div>
+        <p>
+          Take the thin-lens sim all the way to fully working and polished: draggable object and
+          lens, real-time ray redraw, adjustable focal length, labeled focal points. This
+          establishes the pattern the other three sims will follow.
+        </p>
+      </div>
+    </div>
+
+    <div class="stage" data-status="todo">
+      <div class="spine"><div class="marker">5</div></div>
+      <div class="card">
+        <div class="card-head">
+          <h2>Replicate the pattern for the rest</h2>
+          <span class="status">Not started</span>
+        </div>
+        <p>
+          Mirrors (plane / concave / convex), refraction &amp; Snell's law, and prism dispersion
+          &mdash; each gets its own page, reusing the Stage&nbsp;3 building blocks and Stage&nbsp;2
+          math, adapted to its own geometry.
+        </p>
+      </div>
+    </div>
+
+    <div class="stage" data-status="todo">
+      <div class="spine"><div class="marker">6</div></div>
+      <div class="card">
+        <div class="card-head">
+          <h2>Build the hub / landing page</h2>
+          <span class="status">Not started</span>
+        </div>
+        <p>
+          A simple index page listing all four simulations &mdash; like PhET's simulation
+          index &mdash; linking out to each one and tying the project together as one site.
+        </p>
+      </div>
+    </div>
+
+    <div class="stage" data-status="todo">
+      <div class="spine"><div class="marker">7</div></div>
+      <div class="card">
+        <div class="card-head">
+          <h2>Polish pass</h2>
+          <span class="status">Not started</span>
+        </div>
+        <p>
+          Responsive layout, touch-drag support, labels and units, wavelength-based ray coloring
+          where relevant, a reset-to-default button, and basic accessibility considerations.
+        </p>
+      </div>
+    </div>
+
+    <div class="stage" data-status="todo">
+      <div class="spine"><div class="marker">8</div></div>
+      <div class="card">
+        <div class="card-head">
+          <h2>Validate and test</h2>
+          <span class="status">Not started</span>
+        </div>
+        <p>
+          Cross-browser check, a full pass comparing outputs against the original Python scripts
+          across a range of inputs, and informal use-testing &mdash; drag things around and see
+          what feels off.
+        </p>
+      </div>
+    </div>
+
+    <div class="stage" data-status="todo">
+      <div class="spine"><div class="marker">9</div></div>
+      <div class="card">
+        <div class="card-head">
+          <h2>Deploy</h2>
+          <span class="status">Not started</span>
+        </div>
+        <p>
+          Push the static files to a free host &mdash; GitHub Pages, Netlify, Vercel, or
+          Cloudflare Pages all work &mdash; and wire up auto-deploy on push.
+        </p>
+      </div>
+    </div>
+
+    <div class="stage optional" data-status="todo">
+      <div class="spine"><div class="marker">+</div></div>
+      <div class="card">
+        <div class="card-head">
+          <h2>Optional extras, later</h2>
+          <span class="status">Not started</span>
+        </div>
+        <p>
+          Shareable links that encode sim state in the URL, diagram export/screenshot, more
+          advanced optical setups (multi-lens systems, aberrations), or usage analytics.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+  <footer class="note">
+    Nine stages, roughly in order &mdash; Stage&nbsp;2 (the math) is worth finishing in isolation
+    before much UI gets built on top of it, so bugs in the physics and bugs in the rendering never
+    have to be untangled at the same time.
+  </footer>
+
+</div>

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Wave Interference</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #0b0b0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui, sans-serif;
+  }
+  canvas {
+    background: #000000;
+    border: 1px solid #333;
+    touch-action: none;
+  }
+  #label {
+    position: fixed;
+    top: 12px;
+    left: 16px;
+    color: #ccc;
+    font-size: 13px;
+    max-width: 480px;
+  }
+  #controls {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    color: #ccc;
+    font-size: 12px;
+    text-align: right;
+    background: rgba(255,255,255,0.03);
+    padding: 10px 14px;
+    border-radius: 6px;
+  }
+  #controls div {
+    margin-bottom: 8px;
+  }
+  #controls input[type="range"] {
+    width: 180px;
+  }
+  #controls select {
+    width: 190px;
+  }
+  #toggleGraphBtn {
+    position: fixed;
+    top: 100px;
+    left: 16px;
+  }
+  #graphPanel {
+    display: none;
+    position: fixed;
+    top: 132px;
+    left: 16px;
+    background: #000;
+    border: 1px solid #333;
+    border-radius: 4px;
+  }
+</style>
+</head>
+<body>
+
+<div id="label">
+  Wave interference. Yellow = crest, blue = trough. Each open slit re-emits
+  the incoming wave (Huygens' principle); where the re-emitted waves overlap,
+  you get constructive (bright, strongly oscillating) and destructive (dark,
+  nearly still) interference.
+</div>
+
+<button id="toggleGraphBtn">Show intensity graph</button>
+<div id="graphPanel">
+  <canvas id="graphCanvas" width="220" height="600"></canvas>
+  <label style="display:block; color:#999; font-size:11px; padding:4px 6px;">
+    <input type="checkbox" id="logScaleCheckbox"> Log scale (reveals faint side lobes)
+  </label>
+</div>
+
+<div id="controls">
+  <div>
+    <label for="slitModeSelect">Slits:</label><br>
+    <select id="slitModeSelect">
+      <option value="single">Single slit</option>
+      <option value="double" selected>Double slit</option>
+    </select>
+  </div>
+  <div>
+    <label for="wavefrontSelect">Incoming wavefronts:</label><br>
+    <select id="wavefrontSelect">
+      <option value="flat" selected>Flat (plane wave)</option>
+      <option value="spherical">Spherical (point source)</option>
+    </select>
+  </div>
+  <div>
+    <label for="wavelengthSlider">Wavelength: <span id="wavelengthValue">20</span> px</label><br>
+    <input type="range" id="wavelengthSlider" min="10" max="80" step="1" value="20">
+  </div>
+  <div>
+    <label for="slitWidthSlider">Slit width: <span id="slitWidthValue">55</span> px</label><br>
+    <input type="range" id="slitWidthSlider" min="4" max="60" step="1" value="55">
+  </div>
+  <div id="separationRow">
+    <label for="separationSlider">Slit separation: <span id="separationValue">90</span> px</label><br>
+    <input type="range" id="separationSlider" min="20" max="250" step="5" value="90">
+  </div>
+  <button id="pauseBtn">Pause</button>
+</div>
+
+<canvas id="canvas" width="1200" height="600"></canvas>
+
+<script src="wave.js"></script>
+
+</body>
+</html>

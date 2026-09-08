@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Spring-Mass Oscillator</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #0b0b0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui, sans-serif;
+  }
+  canvas {
+    background: #ffffff;
+    border: 1px solid #333;
+    touch-action: none;
+  }
+  #label {
+    position: fixed;
+    top: 12px;
+    left: 16px;
+    color: #ccc;
+    font-size: 13px;
+    max-width: 480px;
+  }
+  #controls {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    color: #ccc;
+    font-size: 12px;
+    text-align: right;
+    background: rgba(255,255,255,0.03);
+    padding: 10px 14px;
+    border-radius: 6px;
+  }
+  #controls div {
+    margin-bottom: 8px;
+  }
+  #controls input[type="range"] {
+    width: 180px;
+  }
+  #controls label.checkbox {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 6px;
+  }
+  #buttonsRow {
+    display: flex;
+    gap: 6px;
+  }
+  #buttonsRow button {
+    flex: 1;
+  }
+  #stopwatch {
+    position: fixed;
+    top: 135px;
+    left: 16px;
+    width: 200px;
+    color: #ccc;
+    font-size: 12px;
+    background: rgba(20,20,24,0.92);
+    padding: 10px 14px;
+    border-radius: 6px;
+    cursor: grab;
+    touch-action: none;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.4);
+  }
+  #stopwatch button {
+    cursor: pointer;
+  }
+  #stopwatch #swDisplay {
+    font-size: 22px;
+    font-variant-numeric: tabular-nums;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 8px;
+  }
+  #stopwatch #swButtons {
+    display: flex;
+    gap: 6px;
+    margin-bottom: 8px;
+  }
+  #stopwatch #swButtons button {
+    flex: 1;
+  }
+  #stopwatch ol {
+    margin: 0;
+    padding-left: 18px;
+  }
+  #stopwatch li {
+    margin-bottom: 3px;
+  }
+</style>
+</head>
+<body>
+
+<div id="label">
+  Spring-mass oscillator. Starts with nothing hanging on the spring — drag
+  a spare weight from the table up onto the hook, or use the mass slider,
+  to load it. Once loaded, drag the hanging mass up or down to stretch or
+  compress the spring, then release to watch it oscillate. Adjust the
+  spring's natural (rest) length, its stiffness k, and the mass. The
+  spring's own mass is no longer a free variable — it's modeled as a
+  stainless-steel coil whose wire gets thicker (and heavier) as k goes up,
+  just like a real spring set, and that extra mass feeds into the physics
+  as effective mass = mass + spring mass/3. The laser and sensor sit in the
+  small crate on the table — drag either one anywhere on the canvas to set
+  up a light gate; the sensor lights up when it catches the beam. A 60 cm
+  ruler is tucked along the left edge — drag it anywhere to measure.
+</div>
+
+<div id="controls">
+  <div>
+    <label for="restLengthSlider">Natural length: <span id="restLengthValue">0.10</span> m</label><br>
+    <input type="range" id="restLengthSlider" min="0.05" max="0.3" step="0.01" value="0.1">
+  </div>
+  <div>
+    <label for="kSlider">Spring constant k: <span id="kValue">25</span> N/m</label><br>
+    <input type="range" id="kSlider" min="10" max="60" step="1" value="25">
+    <div style="font-size: 11px; opacity: 0.75; margin-top: 2px;">
+      Spring mass (stainless steel wire, thickens with k): <span id="springMassValue">6.0</span> g
+    </div>
+  </div>
+  <div>
+    <label for="massSlider">Mass: <span id="massValue">0.00</span> kg</label><br>
+    <input type="range" id="massSlider" min="0" max="0.5" step="0.05" value="0">
+  </div>
+  <div>
+    <label for="dampingSlider">Damping: <span id="dampingValue">0.4</span> N&middot;s/m</label><br>
+    <input type="range" id="dampingSlider" min="0" max="5" step="0.1" value="0.4">
+  </div>
+  <div>
+    <label class="checkbox"><input type="checkbox" id="equilibriumCheckbox" checked> Show equilibrium line</label>
+  </div>
+  <div>
+    <label class="checkbox"><input type="checkbox" id="naturalLengthCheckbox" checked> Show natural length line</label>
+  </div>
+  <div>
+    <label class="checkbox"><input type="checkbox" id="vectorCheckbox" checked> Show velocity vector</label>
+  </div>
+  <div>
+    <label class="checkbox"><input type="checkbox" id="energyCheckbox"> Show energy graph</label>
+  </div>
+  <div id="buttonsRow">
+    <button id="resetBtn">Reset</button>
+    <button id="pauseBtn">Pause</button>
+  </div>
+</div>
+
+<div id="stopwatch">
+  <div id="swDisplay">00:00.00</div>
+  <div id="swButtons">
+    <button id="swStartStopBtn">Start</button>
+    <button id="swLapBtn">Lap</button>
+    <button id="swResetBtn">Reset</button>
+  </div>
+  <ol id="swLaps"></ol>
+</div>
+
+<canvas id="canvas" width="900" height="750"></canvas>
+
+<script src="spring.js"></script>
+
+</body>
+</html>

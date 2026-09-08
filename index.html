@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Physics Sims</title>
+<style>
+  :root {
+    --bg: #f2f4f8;
+    --surface: #ffffff;
+    --border: #d7dbe4;
+    --text: #1a1f2b;
+    --text-muted: #5b6474;
+    --accent: #1a73c7;
+    --shadow: 0 1px 2px rgba(20, 24, 33, 0.06), 0 8px 24px -12px rgba(20, 24, 33, 0.12);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #0d0f14;
+      --surface: #161a22;
+      --border: #272e3b;
+      --text: #ece9e1;
+      --text-muted: #8b93a3;
+      --accent: #5eb0ff;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -12px rgba(0, 0, 0, 0.5);
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--bg);
+    color: var(--text);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    padding: 48px 20px 64px;
+  }
+  .wrap { max-width: 880px; margin: 0 auto; }
+  h1 { font-size: 28px; margin: 0 0 6px; }
+  p.intro { color: var(--text-muted); margin: 0 0 36px; font-size: 15px; max-width: 60ch; }
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 16px;
+  }
+  a.card {
+    display: block;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px 20px;
+    text-decoration: none;
+    color: var(--text);
+    box-shadow: var(--shadow);
+    transition: transform 0.12s ease, border-color 0.12s ease;
+  }
+  a.card:hover { transform: translateY(-2px); border-color: var(--accent); }
+  .card h2 { font-size: 16px; margin: 0 0 6px; }
+  .card p { font-size: 13px; color: var(--text-muted); margin: 0; line-height: 1.45; }
+  footer {
+    margin-top: 44px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  footer a { color: var(--text-muted); }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Physics Sims</h1>
+  <p class="intro">A small set of PhET-style interactive simulations — pure HTML/Canvas, no build step. Open any of these on this device or any other; each one is a link.</p>
+
+  <div class="grid">
+    <a class="card" href="spring.html">
+      <h2>Spring-Mass Oscillator</h2>
+      <p>Drag masses onto a spring, tune k/mass/damping, and watch it oscillate. Includes a light-gate photogate and a stopwatch for measuring the period.</p>
+    </a>
+    <a class="card" href="projectile.html">
+      <h2>Projectile Motion</h2>
+      <p>A catapult launches a projectile with adjustable angle, speed, and air drag. Traces the trajectory and shows velocity components live.</p>
+    </a>
+    <a class="card" href="wave.html">
+      <h2>Wave Interference</h2>
+      <p>Two-source wave interference — see constructive and destructive patterns build up in real time.</p>
+    </a>
+    <a class="card" href="fizeau.html">
+      <h2>Fizeau Speed-of-Light Experiment</h2>
+      <p>A recreation of Fizeau's rotating-toothed-wheel setup for measuring the speed of light.</p>
+    </a>
+    <a class="card" href="lens-rays.html">
+      <h2>Point Source &amp; Lens Rays</h2>
+      <p>A point or collimated source through a thin lens — adjust focal length and source type to see how the ray fan converges.</p>
+    </a>
+  </div>
+
+  <footer>
+    Also in this repo: <a href="optics-roadmap.html">optics sim roadmap</a> (planning notes) ·
+    <a href="point-source-rays.html">an earlier, simpler version</a> of the point-source sim.
+  </footer>
+</div>
+</body>
+</html>
