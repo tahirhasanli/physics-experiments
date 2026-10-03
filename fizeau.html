@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Fizeau Speed-of-Light Experiment</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #0b0b0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui, sans-serif;
+  }
+  canvas {
+    background: #000000;
+    border: 1px solid #333;
+  }
+  #label {
+    position: fixed;
+    top: 12px;
+    left: 16px;
+    color: #ccc;
+    font-size: 13px;
+    max-width: 480px;
+  }
+  #controls {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    color: #ccc;
+    font-size: 12px;
+    text-align: right;
+    background: rgba(255,255,255,0.03);
+    padding: 10px 14px;
+    border-radius: 6px;
+  }
+  #controls div {
+    margin-bottom: 8px;
+  }
+  #controls input[type="range"] {
+    width: 180px;
+  }
+  #playPauseBtn {
+    margin-top: 4px;
+    width: 100%;
+  }
+</style>
+</head>
+<body>
+
+<div id="label">
+  Fizeau toothed-wheel experiment. Light passes through the spinning wheel,
+  travels to the distant mirror and back, and must pass through the wheel
+  again to reach the eyepiece. Increase the rotation rate until the
+  eyepiece goes dark &mdash; that's an eclipse point.
+</div>
+
+<div id="controls">
+  <div>
+    <label for="teethSlider">Teeth (N): <span id="teethValue">8</span></label><br>
+    <input type="range" id="teethSlider" min="4" max="40" step="1" value="8">
+  </div>
+  <div>
+    <label for="rotationSlider">Rotation rate: <span id="rotationValue">0.40</span> rev/s</label><br>
+    <input type="range" id="rotationSlider" min="0" max="5" step="0.01" value="0.4">
+  </div>
+  <div>
+    <label for="distanceSlider">Distance L: <span id="distanceValue">700</span> px</label><br>
+    <input type="range" id="distanceSlider" min="300" max="820" step="10" value="700">
+  </div>
+  <div>
+    <label for="speedSlider">Sim light speed: <span id="speedValue">300</span> px/s</label><br>
+    <input type="range" id="speedSlider" min="100" max="600" step="10" value="300">
+  </div>
+  <button id="playPauseBtn">Pause</button>
+</div>
+
+<canvas id="canvas" width="1200" height="560"></canvas>
+
+<script src="fizeau.js"></script>
+
+</body>
+</html>

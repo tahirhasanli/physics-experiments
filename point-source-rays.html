@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Point Source - 120 degree ray fan</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #0b0b0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui, sans-serif;
+  }
+  canvas {
+    background: #000000;
+    border: 1px solid #333;
+  }
+  #label {
+    position: fixed;
+    top: 12px;
+    left: 16px;
+    color: #ccc;
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<div id="label">Point source, 120&deg; field of rays (edit the CONFIG values in the script to change it)</div>
+<canvas id="canvas" width="900" height="600"></canvas>
+
+<script>
+  const canvas = document.getElementById('canvas');
+  const ctx = canvas.getContext('2d');
+
+  // ---- CONFIG: change these to adjust the setup ----
+  const CONFIG = {
+    source: { x: 120, y: canvas.height / 2 }, // where the point source sits
+    facingAngleDeg: 0,     // direction the source points (0 = straight right / +x)
+    fieldAngleDeg: 120,    // total angular width of the ray fan
+    numRays: 25,           // how many rays are drawn across the field
+    rayLength: 750         // how far each ray is drawn
+  };
+
+  function degToRad(deg) {
+    return (deg * Math.PI) / 180;
+  }
+
+  // Returns an array of ray angles (in degrees) evenly spread across the field,
+  // centered on facingAngleDeg.
+  function getRayAngles(config) {
+    const half = config.fieldAngleDeg / 2;
+    const start = config.facingAngleDeg - half;
+    const end = config.facingAngleDeg + half;
+    const angles = [];
+
+    for (let i = 0; i < config.numRays; i++) {
+      const t = config.numRays === 1 ? 0.5 : i / (config.numRays - 1);
+      angles.push(start + t * (end - start));
+    }
+    return angles;
+  }
+
+  function drawSource(source) {
+    ctx.beginPath();
+    ctx.arc(source.x, source.y, 5, 0, Math.PI * 2);
+    ctx.fillStyle = '#ffd45e';
+    ctx.fill();
+  }
+
+  function drawRays(config) {
+    const angles = getRayAngles(config);
+
+    ctx.strokeStyle = 'rgba(255, 212, 94, 0.55)';
+    ctx.lineWidth = 1;
+
+    angles.forEach((angleDeg) => {
+      const angleRad = degToRad(angleDeg);
+      const dx = Math.cos(angleRad) * config.rayLength;
+      const dy = Math.sin(angleRad) * config.rayLength;
+
+      ctx.beginPath();
+      ctx.moveTo(config.source.x, config.source.y);
+      ctx.lineTo(config.source.x + dx, config.source.y + dy);
+      ctx.stroke();
+    });
+  }
+
+  function render() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    drawRays(CONFIG);
+    drawSource(CONFIG.source);
+  }
+
+  render();
+</script>
+
+</body>
+</html>

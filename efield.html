@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Charges &amp; Fields</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #0b0b0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui, sans-serif;
+  }
+  canvas {
+    background: #ffffff;
+    border: 1px solid #333;
+    touch-action: none;
+  }
+  #hint {
+    position: fixed;
+    top: 10px;
+    left: 16px;
+    color: #888;
+    font-size: 12px;
+    max-width: 420px;
+  }
+  #panel {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    color: #ccc;
+    font-size: 12px;
+    background: rgba(255,255,255,0.03);
+    padding: 10px 12px;
+    border-radius: 6px;
+    width: 210px;
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
+  }
+  #panel h3 {
+    margin: 14px 0 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  #panel h3:first-child { margin-top: 0; }
+  #panel .row { margin-bottom: 8px; }
+  #panel input[type="range"] { width: 100%; }
+  #panel .valueLabel { display: flex; justify-content: space-between; }
+  #panel button {
+    display: block;
+    width: 100%;
+    margin-bottom: 6px;
+    padding: 7px 8px;
+    text-align: left;
+    background: #1c1f26;
+    color: #ddd;
+    border: 1px solid #3a3f4a;
+    border-radius: 4px;
+    cursor: grab;
+    font-size: 12px;
+    touch-action: none;
+    user-select: none;
+  }
+  #panel button:hover { background: #262a33; }
+  #panel button.dragSource { opacity: 0.4; }
+  #panel button.plain { cursor: pointer; }
+  #panel button.positive { border-color: #a33; }
+  #panel button.negative { border-color: #35a; }
+  #panel button.probe { border-color: #6a7a6a; cursor: grab; }
+  #boardInfo { font-size: 11px; color: #777; margin-bottom: 10px; }
+  label.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+    cursor: pointer;
+  }
+  #dragGhost {
+    position: fixed;
+    z-index: 999;
+    pointer-events: none;
+    display: none;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    color: #fff;
+    font-size: 15px;
+    font-weight: 700;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+    transform: translate(-50%, -50%);
+  }
+  #inspector {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ccc;
+    font-size: 12px;
+    background: rgba(255,255,255,0.03);
+    padding: 10px 12px;
+    border-radius: 6px;
+    width: 200px;
+    display: none;
+  }
+  #inspector h3 {
+    margin: 0 0 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  #inspFields .row { margin-bottom: 8px; }
+  #inspFields input[type="range"] { width: 100%; }
+  #inspFields .valueLabel { display: flex; justify-content: space-between; }
+  #deleteSelectedBtn {
+    width: 100%;
+    padding: 7px 8px;
+    background: #4a1f1f;
+    color: #f0c8c8;
+    border: 1px solid #6a2f2f;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  #deleteSelectedBtn:hover { background: #5a2626; }
+</style>
+</head>
+<body>
+
+<div id="hint">
+  Drag a "+" or "&minus;" charge from the panel onto the board to place it,
+  or drag out the field probe to read the exact field at a point — its
+  screen shows the live reading as you move it. Drag anything already
+  placed to reposition it; click to select it and adjust its strength or
+  delete it. Charges are in whole numbers of elementary charges (e); the
+  board is a real 20cm-tall sheet, so every field reading is a real N/C
+  value from Coulomb's law.
+</div>
+
+<div id="panel">
+  <div id="boardInfo"></div>
+  <h3>Add to the board</h3>
+  <button class="positive" data-drag="charge" data-sign="1">&plus; Positive charge</button>
+  <button class="negative" data-drag="charge" data-sign="-1">&minus; Negative charge</button>
+  <button class="probe" data-drag="probe">&#9101; Field probe</button>
+  <button class="plain" id="clearBoardBtn">Clear board</button>
+
+  <h3>Field display</h3>
+  <label class="checkbox"><input type="checkbox" id="showArrows" checked> Show field arrows</label>
+  <div class="row">
+    <div class="valueLabel"><span>Arrow spacing</span><span id="spacingValue">45 px</span></div>
+    <input type="range" id="spacingSlider" min="24" max="80" step="2" value="45">
+  </div>
+  <div class="row">
+    <div class="valueLabel"><span>Sensitivity</span><span id="sensitivityValue">1.0&times;</span></div>
+    <input type="range" id="sensitivitySlider" min="0.2" max="3" step="0.1" value="1">
+  </div>
+</div>
+
+<div id="dragGhost"></div>
+
+<div id="inspector">
+  <h3 id="inspTitle">Charge</h3>
+  <div id="inspFields"></div>
+  <button id="deleteSelectedBtn">Delete</button>
+</div>
+
+<canvas id="canvas" width="1000" height="650"></canvas>
+
+<script src="efield.js"></script>
+
+</body>
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Point Source - 120 degree ray fan</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #0b0b0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui, sans-serif;
+  }
+  canvas {
+    background: #000000;
+    border: 1px solid #333;
+    cursor: default;
+    touch-action: none; /* stops the browser from scrolling/zooming while dragging on touch */
+  }
+  #label {
+    position: fixed;
+    top: 12px;
+    left: 16px;
+    color: #ccc;
+    font-size: 13px;
+  }
+</style>
+</head>
+<body>
+
+<div id="label">Point source, 120&deg; field of rays (edit CONFIG in script.js — open via lens-rays.html)</div>
+<button id="toggleMissedRaysBtn" style="position: fixed; top: 12px; right: 16px;">Hide missed rays</button>
+<button id="toggleGridBtn" style="position: fixed; top: 48px; right: 16px;">Hide grid</button>
+<select id="sourceTypeSelect" style="position: fixed; top: 84px; right: 16px;">
+  <option value="point">Point source</option>
+  <option value="collimated">Collimated source</option>
+  <option value="object">Object (shows image)</option>
+</select>
+<div style="position: fixed; top: 120px; right: 16px; color: #ccc; font-size: 12px; text-align: right;">
+  <label for="focalLengthSlider">Focal length: <span id="focalLengthValue">180</span>mm</label><br>
+  <input type="range" id="focalLengthSlider" min="-400" max="400" step="10" value="180">
+</div>
+<canvas id="canvas" width="1200" height="800"></canvas>
+
+<!-- All the JavaScript logic now lives in its own file, loaded here -->
+<script src="script.js"></script>
+
+</body>
+</html>

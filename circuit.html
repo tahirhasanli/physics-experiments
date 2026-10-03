@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Circuit Builder</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #0b0b0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui, sans-serif;
+  }
+  canvas {
+    background: #ffffff;
+    border: 1px solid #333;
+    touch-action: none;
+  }
+  #hint {
+    position: fixed;
+    top: 10px;
+    left: 16px;
+    color: #888;
+    font-size: 12px;
+    max-width: 420px;
+  }
+  #palette {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    color: #ccc;
+    font-size: 12px;
+    background: rgba(255,255,255,0.03);
+    padding: 10px 12px;
+    border-radius: 6px;
+    width: 190px;
+  }
+  #palette h3 {
+    margin: 0 0 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  #palette button {
+    display: block;
+    width: 100%;
+    margin-bottom: 6px;
+    padding: 7px 8px;
+    text-align: left;
+    background: #1c1f26;
+    color: #ddd;
+    border: 1px solid #3a3f4a;
+    border-radius: 4px;
+    cursor: grab;
+    font-size: 12px;
+    touch-action: none;
+    user-select: none;
+  }
+  #palette button:hover {
+    background: #262a33;
+  }
+  #palette button.dragSource {
+    opacity: 0.4;
+  }
+  #dragGhost {
+    position: fixed;
+    z-index: 999;
+    pointer-events: none;
+    display: none;
+    padding: 6px 10px;
+    background: #1a73c7;
+    color: #fff;
+    font-size: 12px;
+    border-radius: 4px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.35);
+    transform: translate(-50%, -50%);
+  }
+  #inspector {
+    position: fixed;
+    bottom: 16px;
+    left: 50%;
+    transform: translateX(-50%);
+    color: #ccc;
+    font-size: 12px;
+    background: rgba(255,255,255,0.03);
+    padding: 10px 12px;
+    border-radius: 6px;
+    width: 200px;
+    display: none;
+  }
+  #inspector h3 {
+    margin: 0 0 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  #inspFields .row {
+    margin-bottom: 8px;
+  }
+  #inspFields input[type="range"] {
+    width: 100%;
+  }
+  #inspFields .valueLabel {
+    display: flex;
+    justify-content: space-between;
+  }
+  #deleteBtn {
+    width: 100%;
+    padding: 7px 8px;
+    background: #4a1f1f;
+    color: #f0c8c8;
+    border: 1px solid #6a2f2f;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  #deleteBtn:hover {
+    background: #5a2626;
+  }
+</style>
+</head>
+<body>
+
+<div id="hint">
+  Drag a part from the menu onto the board to place it. Drag from a lead
+  (the small circle at each end) to pull out a wire and connect it to
+  another lead. Drag a part's body to move it; Ctrl/Cmd+drag a lead to
+  rotate it. Click a switch to flip it, or a wire to change which way it
+  bends. Click a part to select it — edit its value or delete it. An LED
+  only lights when current flows through it in the direction of its arrow.
+</div>
+
+<div id="palette">
+  <h3>Add a part</h3>
+  <button data-kind="battery">🔋 Battery</button>
+  <button data-kind="acsource">〜 AC Source</button>
+  <button data-kind="resistor">Resistor</button>
+  <button data-kind="capacitor">Capacitor</button>
+  <button data-kind="inductor">Inductor</button>
+  <button data-kind="switch">Switch</button>
+  <button data-kind="led">💡 LED Bulb</button>
+  <button data-kind="voltmeter">Voltmeter (V)</button>
+  <button data-kind="ammeter">Ammeter (A)</button>
+  <button data-kind="oscilloscopeV">Oscilloscope – V</button>
+  <button data-kind="oscilloscopeI">Oscilloscope – I</button>
+  <button data-kind="wire">Wire</button>
+</div>
+
+<div id="dragGhost"></div>
+
+<div id="inspector">
+  <h3 id="inspTitle">Resistor</h3>
+  <div id="inspFields"></div>
+  <button id="deleteBtn">Delete part</button>
+</div>
+
+<canvas id="canvas" width="1000" height="650"></canvas>
+
+<script src="circuit.js"></script>
+
+</body>
+</html>

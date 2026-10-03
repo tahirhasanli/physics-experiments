@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Huygens' Principle</title>
+<style>
+  html, body {
+    margin: 0;
+    height: 100%;
+    background: #0b0b0f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: system-ui, sans-serif;
+  }
+  canvas {
+    background: #ffffff;
+    border: 1px solid #333;
+    touch-action: none;
+  }
+  #hint {
+    position: fixed;
+    top: 10px;
+    left: 16px;
+    color: #888;
+    font-size: 12px;
+    max-width: 420px;
+  }
+  #panel {
+    position: fixed;
+    top: 12px;
+    right: 16px;
+    color: #ccc;
+    font-size: 12px;
+    background: rgba(255,255,255,0.03);
+    padding: 10px 12px;
+    border-radius: 6px;
+    width: 210px;
+    max-height: calc(100vh - 24px);
+    overflow-y: auto;
+  }
+  #panel h3 {
+    margin: 14px 0 8px;
+    font-size: 11px;
+    font-weight: 600;
+    color: #999;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  #panel h3:first-child { margin-top: 0; }
+  #panel .row {
+    margin-bottom: 8px;
+  }
+  #panel input[type="range"] {
+    width: 100%;
+  }
+  #panel .valueLabel {
+    display: flex;
+    justify-content: space-between;
+  }
+  #panel select {
+    width: 100%;
+    background: #1c1f26;
+    color: #ddd;
+    border: 1px solid #3a3f4a;
+    border-radius: 4px;
+    padding: 5px 6px;
+    font-size: 12px;
+  }
+  #panel button {
+    display: block;
+    width: 100%;
+    margin-bottom: 6px;
+    padding: 7px 8px;
+    text-align: left;
+    background: #1c1f26;
+    color: #ddd;
+    border: 1px solid #3a3f4a;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 12px;
+  }
+  #panel button:hover { background: #262a33; }
+  #panel button.primary { background: #163a5c; border-color: #2c6ea3; }
+  #panel button.primary:hover { background: #1c4770; }
+  #addRayRow {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  #addRayRow input[type="number"] {
+    width: 52px;
+    background: #1c1f26;
+    color: #ddd;
+    border: 1px solid #3a3f4a;
+    border-radius: 4px;
+    padding: 5px 6px;
+    font-size: 12px;
+  }
+  #addRayRow button { margin-bottom: 0; flex: 1; }
+  label.checkbox {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 6px;
+    cursor: pointer;
+  }
+  #readout {
+    font-size: 11px;
+    color: #999;
+    line-height: 1.6;
+    background: rgba(255,255,255,0.03);
+    border-radius: 4px;
+    padding: 6px 8px;
+    margin-bottom: 4px;
+  }
+  #readout b { color: #ccc; }
+</style>
+</head>
+<body>
+
+<div id="hint">
+  Click near the wavefront to plant a secondary source (a "ray"); drag one
+  to move it, select and press Delete to remove it. Each ray grows a small
+  tangent wavelet circle — the curve tangent to all of them is the next
+  wavefront. Click "Advance" to promote it and repeat. Drag the wall to
+  move it, or Ctrl/Cmd+drag one of its ends to rotate it — it blocks rays
+  and the wavefront everywhere except through its slits. This is manual on
+  purpose: leave a slit empty and the wave just stops there (no
+  diffraction); place a few rays yourself right inside a slit and watch the
+  wavefront curl around into the shadow — that curling is the classic
+  Huygens argument for diffraction.
+</div>
+
+<div id="panel">
+  <h3>Wave</h3>
+  <div class="row">
+    <label>Mode</label>
+    <select id="modeSelect">
+      <option value="circular">Circular (point source)</option>
+      <option value="plane">Plane wave</option>
+    </select>
+  </div>
+  <div class="row">
+    <div class="valueLabel"><span>Wave speed v</span><span id="speedValue">100</span></div>
+    <input type="range" id="speedSlider" min="20" max="220" step="5" value="100">
+  </div>
+  <div class="row">
+    <div class="valueLabel"><span>Time step &Delta;t</span><span id="dtValue">0.30 s</span></div>
+    <input type="range" id="dtSlider" min="0.05" max="1" step="0.05" value="0.3">
+  </div>
+  <div id="readout"></div>
+
+  <h3>Rays</h3>
+  <div id="addRayRow">
+    <input type="number" id="rayCount" min="1" max="72" value="8">
+    <button id="addRaysBtn">Add evenly</button>
+  </div>
+  <button id="clearRaysBtn">Clear rays</button>
+
+  <h3>Show</h3>
+  <label class="checkbox"><input type="checkbox" id="showRays" checked> Rays</label>
+  <label class="checkbox"><input type="checkbox" id="showWavelets" checked> Tangent (wavelet) circles</label>
+  <label class="checkbox"><input type="checkbox" id="showNewFront" checked> Constructed wavefront</label>
+  <label class="checkbox"><input type="checkbox" id="showReference"> True wavefront (reference)</label>
+
+  <h3>Wall &amp; slits</h3>
+  <label class="checkbox"><input type="checkbox" id="showWall" checked> Show wall</label>
+  <div class="row">
+    <div class="valueLabel"><span>Number of slits</span><span id="slitCountValue">2</span></div>
+    <input type="range" id="slitCountSlider" min="0" max="6" step="1" value="2">
+  </div>
+  <div class="row">
+    <div class="valueLabel"><span>Slit width</span><span id="slitWidthValue">24 px</span></div>
+    <input type="range" id="slitWidthSlider" min="5" max="80" step="1" value="24">
+  </div>
+  <button id="resetWallBtn">Reset wall position</button>
+
+  <h3>Steps</h3>
+  <button id="advanceBtn" class="primary">Advance wavefront &rarr;</button>
+  <button id="resetBtn">Reset</button>
+</div>
+
+<canvas id="canvas" width="1000" height="650"></canvas>
+
+<script src="huygens.js"></script>
+
+</body>
+</html>
